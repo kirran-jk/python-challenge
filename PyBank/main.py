@@ -36,25 +36,28 @@ def total_net(profit):
         total += row
     return int(total)
 
-#changes = (profit[mth_count-1] - profit[0]) / (mth_count - 1)
-
 def av_change(change):
     total = 0.0
     for row in change:
         total += row
     return '{:.2f}'.format(total/(mth_count - 1))
 
-Header = "Financial Analysis"
-Months = f'Total Months: {mth_count}'
-Total = f'Total: ${total_net(profit)}'
-Average = f'Average Change: ${av_change(change)}'
-Increase = f'Greatest Increase in Profits: {max_month} (${max_profit})'
-Decrease = f'Greatest Decrease in Profits: {min_month} (${min_profit})'
+lines = """
+Financial Analysis
+----------------------------
+Total Months: %s
+Total: $%s
+Average Change: $%s
+Greatest Increase in Profits: %s ($%s)
+Greatest Decrease in Profits: %s ($%s)
+"""%(mth_count, total_net(profit), av_change(change), max_month, max_profit, min_month, min_profit)
+
+print(lines)
 
 results_txt = os.path.join('..','Pybank','Analysis','budget_results.txt')
 
 with open(results_txt, 'w+') as txtfile:
-    txtwriter = txtfile.writelines(f'{Header} \n \n{Months} \n{Total} \n{Average} \n{Increase} \n{Decrease}')
-    print()
+    txtwriter = txtfile.writelines(lines)
+    
 
         
