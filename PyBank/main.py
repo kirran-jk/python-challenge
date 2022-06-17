@@ -10,6 +10,7 @@ change = []
 with open(budget_csv, newline = '') as csvfile:
     csvreader = csv.reader(csvfile, delimiter = ',')
     header = next(csvreader)
+    
     previous = None
     max_profit = 0
     max_month = ""
@@ -42,7 +43,7 @@ def av_change(change):
         total += row
     return '{:.2f}'.format(total/(mth_count - 1))
 
-lines = """
+output = """
 Financial Analysis
 ----------------------------
 Total Months: %s
@@ -52,12 +53,12 @@ Greatest Increase in Profits: %s ($%s)
 Greatest Decrease in Profits: %s ($%s)
 """%(mth_count, total_net(profit), av_change(change), max_month, max_profit, min_month, min_profit)
 
-print(lines)
+print(output)
 
 results_txt = os.path.join('..','Pybank','Analysis','budget_results.txt')
 
-with open(results_txt, 'w+') as txtfile:
-    txtwriter = txtfile.writelines(lines)
+with open(results_txt, 'w') as txtfile:
+    txtwriter = txtfile.writelines(output)
     
 
         
