@@ -1,57 +1,65 @@
 import os
 import csv
 
+# Path to collect the data file.
 election_csv = os.path.join('..','PyPoll','Resources','election_data.csv')
 
+# Method to populate dict keyed on candidate name and value vote count. 
 def election_results(election_data):
-    candidate = str(election_data[2])
+    candidate = election_data[2]
                    
-    if candidate in cand_list:
-        cand_list[candidate] += 1
+    if candidate in cand_dict:
+        cand_dict[candidate] += 1
     else :
-        cand_list[candidate] = 1
-    return cand_list
+        cand_dict[candidate] = 1
+    return cand_dict
 
+# Method to calculate the proportion of votes per candidate.
 def per_votes():
-    per_votes = (cand_list[candidate]/total_votes) * 100
+    per_votes = (cand_dict[candidate]/total_votes) * 100
     return per_votes
 
-
+# Read in CSV file, splitting the data on commas and storing the header row.
 with open(election_csv, newline = '') as csvfile:
     csvreader = csv.reader(csvfile, delimiter = ',')
     header = next(csvreader)
-    
-    total_votes = 0
-    cand_list = {}
-    
-    for row in csvreader:
-        cand_list = election_results(row)
-        total_votes += 1
 
+    # Define variables.
+    total_votes = 0
+    cand_dict = {}
+
+    # Method to loop through rows in datafile, call method election_results() and calculate total votes.
+    for row in csvreader:
+        cand_dict = election_results(row)
+        total_votes += 1
+        
+    # Define variables.
     max_per = 0
     winner = ''
     cand_lines = ''
 
-    for candidate in cand_list:
+    # For each candidate in dict, call method per_votes(). Calculate candidate with the maximum % of votes.
+    for candidate in cand_dict:
         cand_per = per_votes()
         if cand_per > max_per:
             max_per = cand_per
             winner = candidate
-        cand_lines += '%s: %s%% (%s) \n'%(candidate, '{:.3f}'.format(cand_per), cand_list[candidate])
-        
-output = """
-Election Results
+        cand_lines += f'{candidate}: {cand_per:.3f}% ({cand_dict[candidate]})\n'
+
+# Format output to print and write to Text file.     
+output = f"""Election Results
 -------------------------
-Total Votes: %s
+Total Votes: {total_votes}
 -------------------------
-%s
+{cand_lines}\
 -------------------------
-Winner: %s
+Winner: {winner}
 -------------------------
-"""%(total_votes, cand_lines.strip('\n'), winner)
+"""
 
 print(output)
 
+# Path to create text file and write output to file.
 results_txt = os.path.join('..','PyPoll','Analysis','election_results.txt')
 
 with open(results_txt, 'w') as txtfile:
